@@ -20,9 +20,8 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.junit.Test;
 
-public class DataGeneratorTest {
-
-  DataGenerator generator = new DataGenerator();
+public class DataGeneratorTablePriorityImplTest {
+  DataGeneratorTablePriorityImpl generator = new DataGeneratorTablePriorityImpl();
 
   GeneratorConfigReader reader = new GeneratorConfigReader();
 

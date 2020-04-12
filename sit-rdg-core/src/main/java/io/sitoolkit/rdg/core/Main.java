@@ -1,6 +1,7 @@
 package io.sitoolkit.rdg.core;
 
 import io.sitoolkit.rdg.core.application.DataGenerator;
+import io.sitoolkit.rdg.core.application.DataGeneratorRelationFirstImpl;
 import io.sitoolkit.rdg.core.application.SchemaAnalyzer;
 import io.sitoolkit.rdg.core.infrastructure.ResourceUtils;
 import io.sitoolkit.rdg.core.infrastructure.RuntimeOptions;
@@ -67,7 +68,7 @@ public class Main {
 
   SchemaAnalyzer schemaAnalyzer = new SchemaAnalyzer();
 
-  DataGenerator dataGenerator = new DataGenerator();
+  DataGenerator dataGenerator = new DataGeneratorRelationFirstImpl();
 
   public static void main(String[] args) {
     System.exit(new Main().execute(args));

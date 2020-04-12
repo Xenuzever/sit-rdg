@@ -3,6 +3,7 @@ package io.sitoolkit.rdg.core.domain.schema.jsqlparser;
 import io.sitoolkit.rdg.core.domain.schema.ColumnDef;
 import io.sitoolkit.rdg.core.domain.schema.ColumnPair;
 import io.sitoolkit.rdg.core.domain.schema.RelationDef;
+import io.sitoolkit.rdg.core.domain.schema.SchemaInfo;
 import io.sitoolkit.rdg.core.domain.schema.TableDef;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +24,15 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class StaticRelationFinder extends StatementVisitorAdapter {
 
-  private SchemaInfoStore store;
+  // private SchemaInfoStore store;
+
+  private SchemaInfo schemaInfo;
 
   @Override
   public void visit(CreateTable createTable) {
     log.debug("Visit: {}", createTable);
-    store.addTable(JsqlParserConverter.convert(createTable));
+    schemaInfo.add(
+        createTable.getTable().getSchemaName(), JsqlParserConverter.convert(createTable));
 
     if (createTable.getIndexes() == null) {
       return;
@@ -37,7 +41,7 @@ public class StaticRelationFinder extends StatementVisitorAdapter {
     createTable.getIndexes().stream()
         .filter(ForeignKeyIndex.class::isInstance)
         .map(ForeignKeyIndex.class::cast)
-        .forEach(fk -> readAndStoreFk(createTable.getTable(), fk));
+        .forEach(fk -> analyzeFk(createTable.getTable(), fk));
   }
 
   @Override
@@ -49,12 +53,13 @@ public class StaticRelationFinder extends StatementVisitorAdapter {
         .filter(Objects::nonNull)
         .filter(ForeignKeyIndex.class::isInstance)
         .map(ForeignKeyIndex.class::cast)
-        .forEach(fk -> readAndStoreFk(alter.getTable(), fk));
+        .forEach(fk -> analyzeFk(alter.getTable(), fk));
   }
 
-  public void readAndStoreFk(Table table, ForeignKeyIndex fk) {
+  public void analyzeFk(Table table, ForeignKeyIndex fk) {
+    log.debug("Analyze: {}", fk);
     String schemaName = StringUtils.defaultString(table.getSchemaName());
-    Optional<TableDef> mainTableOpt = store.findTable(schemaName, fk.getTable().getName());
+    Optional<TableDef> mainTableOpt = schemaInfo.findTable(schemaName, fk.getTable().getName());
 
     if (!mainTableOpt.isPresent()) {
       return;
@@ -66,11 +71,16 @@ public class StaticRelationFinder extends StatementVisitorAdapter {
 
     for (int i = 0; i < fk.getColumnsNames().size(); i++) {
       ColumnDef mainColumn =
-          store
-              .getColumnDef(referencedTableName + "." + fk.getReferencedColumnNames().get(i))
+          schemaInfo
+              .findColumn(
+                  fk.getTable().getSchemaName(),
+                  referencedTableName,
+                  fk.getReferencedColumnNames().get(i))
               .orElseThrow();
       ColumnDef subColumn =
-          store.getColumnDef(readingTableName + "." + fk.getColumnsNames().get(i)).orElseThrow();
+          schemaInfo
+              .findColumn(table.getSchemaName(), readingTableName, fk.getColumnsNames().get(i))
+              .orElseThrow();
 
       pairs.add(new ColumnPair(mainColumn, subColumn));
     }
@@ -78,6 +88,6 @@ public class StaticRelationFinder extends StatementVisitorAdapter {
     RelationDef relation = new RelationDef();
     relation.addAllPairs(pairs);
 
-    store.getSchema(schemaName).getRelations().add(relation);
+    schemaInfo.findByName(schemaName).orElseThrow().getRelations().add(relation);
   }
 }

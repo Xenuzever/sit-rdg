@@ -14,6 +14,9 @@ public class GeneratorConfigReader {
   }
 
   public GeneratorConfig readFile(Path file) {
-    return JsonUtils.json2object(file, GeneratorConfig.class);
+    if (file.toFile().exists()) {
+      return JsonUtils.json2object(file, GeneratorConfig.class);
+    }
+    return new GeneratorConfig();
   }
 }

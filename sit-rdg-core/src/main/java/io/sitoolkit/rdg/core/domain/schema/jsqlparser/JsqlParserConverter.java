@@ -50,13 +50,7 @@ public class JsqlParserConverter {
       alias = table.getAlias().getName();
     }
 
-    TableDef tableDef =
-        TableDef.builder()
-            .schemaName(schemaName)
-            .alias(alias)
-            .name(name)
-            .columns(new ArrayList<>())
-            .build();
+    TableDef tableDef = TableDef.builder().name(name).columns(new ArrayList<>()).build();
 
     return tableDef;
   }

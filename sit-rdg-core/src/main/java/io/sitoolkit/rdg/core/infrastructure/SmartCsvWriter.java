@@ -5,7 +5,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -19,12 +18,6 @@ public class SmartCsvWriter implements DataWriter {
     SmartCsvWriter writer = new SmartCsvWriter();
 
     for (Path outDirPath : outDirPaths) {
-
-      if (!outDirPath.toFile().exists()) {
-        log.info("Make directory:{}", outDirPath.toAbsolutePath());
-        outDirPath.toFile().mkdirs();
-      }
-
       writer.writers.add(BufferedAsyncCsvWriter.build(outDirPath.resolve(fileName)));
     }
 
@@ -50,8 +43,7 @@ public class SmartCsvWriter implements DataWriter {
   @Override
   public void close() throws IOException {
 
-    writers
-        .stream()
+    writers.stream()
         .forEach(
             writer -> {
               try {
@@ -64,8 +56,7 @@ public class SmartCsvWriter implements DataWriter {
 
   @Override
   public List<Path> getFiles() {
-    return writers
-        .stream()
+    return writers.stream()
         .map(BufferedAsyncCsvWriter::getFiles)
         .flatMap(List::stream)
         .collect(Collectors.toList());

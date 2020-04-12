@@ -2,6 +2,7 @@ package io.sitoolkit.rdg.core.domain.schema.jsqlparser;
 
 import io.sitoolkit.rdg.core.domain.schema.SchemaInfo;
 import io.sitoolkit.rdg.core.domain.schema.SqlScriptReader;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
@@ -15,11 +16,13 @@ public class SqlScriptReaderJsqlParserImpl implements SqlScriptReader {
 
   private SchemaInfoStore store = new SchemaInfoStore();
 
+  @Getter private SchemaInfo schemaInfo = new SchemaInfo();
+
   @Override
   public void read(String sqlText) {
 
     DynamicRelationFinder dynamicRelFinder = new DynamicRelationFinder(store);
-    StaticRelationFinder staticRelFinder = new StaticRelationFinder(store);
+    StaticRelationFinder staticRelFinder = new StaticRelationFinder(schemaInfo);
 
     try {
       Statements stmts = CCJSqlParserUtil.parseStatements(sqlText);
@@ -38,13 +41,5 @@ public class SqlScriptReaderJsqlParserImpl implements SqlScriptReader {
     } catch (JSQLParserException e) {
       log.error("Error on parsing", e);
     }
-  }
-
-  @Override
-  public SchemaInfo getSchemaInfo() {
-    store.mergeRelations();
-    SchemaInfo schemaInfo = new SchemaInfo(store.getSchemas());
-    schemaInfo.afterDeserialize();
-    return schemaInfo;
   }
 }

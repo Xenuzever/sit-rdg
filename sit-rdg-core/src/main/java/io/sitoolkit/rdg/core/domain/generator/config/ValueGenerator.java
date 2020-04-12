@@ -6,6 +6,7 @@ import io.sitoolkit.rdg.core.domain.schema.ColumnDef;
 @JsonIgnoreProperties("type")
 public interface ValueGenerator {
 
+  // TODO column is unneccesary
   String generate(ColumnDef column);
 
   void initialize();

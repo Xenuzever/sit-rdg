@@ -1,0 +1,85 @@
+{
+  "schemas": [
+    {
+      "tables": [
+        {
+          "tableName": "tab_1",
+          "columns": [
+            {
+              "columnName": "col_1_1",
+              "dataType": {
+                "name": "CHAR",
+                "size": 3
+              }
+            },
+            {
+              "columnName": "col_1_2",
+              "dataType": {
+                "name": "VARCHAR",
+                "size": 5
+              }
+            }
+          ]
+        },
+        {
+          "tableName": "tab_2",
+          "columns": [
+            {
+              "columnName": "col_2_1",
+              "dataType": {
+                "name": "CHAR",
+                "size": 3
+              }
+            },
+            {
+              "columnName": "col_2_2",
+              "dataType": {
+                "name": "INTEGER"
+              }
+            }
+          ]
+        },
+        {
+          "tableName": "tab_3",
+          "columns": [
+            {
+              "columnName": "col_3_1",
+              "dataType": {
+                "name": "CHAR",
+                "size": 3
+              }
+            },
+            {
+              "columnName": "col_3_2",
+              "dataType": {
+                "name": "INTEGER"
+              }
+            }
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "columnPairs": [
+            {
+              "left": "tab_1.col_1_1",
+              "right": "tab_2.col_2_1"
+            }
+          ]
+        },
+        {
+          "columnPairs": [
+            {
+              "left": "tab_2.col_2_1",
+              "right": "tab_3.col_3_1"
+            },
+            {
+              "left": "tab_2.col_2_2",
+              "right": "tab_3.col_3_2"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

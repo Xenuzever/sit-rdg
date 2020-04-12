@@ -8,8 +8,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +27,7 @@ public class SchemaDef {
   @JsonProperty("schemaName")
   private String name;
 
-  @JsonManagedReference private SortedSet<TableDef> tables;
+  @Builder.Default @JsonManagedReference private SortedSet<TableDef> tables = new TreeSet<>();
 
   @Builder.Default private List<RelationDef> relations = new ArrayList<>();
 
@@ -47,11 +47,24 @@ public class SchemaDef {
         .findFirst();
   }
 
+  public void add(TableDef table) {
+    tables.add(table);
+    table.setSchema(this);
+    table.setSchemaName(this.getName());
+  }
+
   @JsonIgnore
   public Optional<TableDef> findTable(String tableName) {
     return tables.stream()
         .filter(table -> StringUtils.equalsIgnoreCase(table.getName(), tableName))
         .findFirst();
+  }
+
+  public List<RelationDef> findRelation(TableDef table) {
+
+    return relations.stream()
+        .filter(relation -> relation.getTables().contains(table))
+        .collect(Collectors.toList());
   }
 
   public boolean equalsName(String name) {
@@ -67,20 +80,14 @@ public class SchemaDef {
   }
 
   void resolveRelationReferenceOfColumn(RelationDef relation) {
-    Set<ColumnDef> columnsInSchema =
-        relation.getDistinctColumns().stream()
-            .map(ColumnDef::getFullyQualifiedName)
-            .map(this::findColumnByQualifiedName)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .collect(Collectors.toSet());
 
-    for (ColumnDef columnInSchema : columnsInSchema) {
-      for (ColumnPair pair : relation.getColumnPairs()) {
-        pair.getColumns().remove(columnInSchema);
-        pair.getColumns().add(columnInSchema);
-        columnInSchema.getRelations().add(relation);
-      }
+    for (ColumnPair pair : relation.getColumnPairs()) {
+      ColumnDef left =
+          findColumnByQualifiedName(pair.getLeft().getFullyQualifiedName()).orElseThrow();
+      ColumnDef right =
+          findColumnByQualifiedName(pair.getRight().getFullyQualifiedName()).orElseThrow();
+      pair.reset(left, right);
+      // columnInSchema.getRelations().add(relation);
     }
   }
 }

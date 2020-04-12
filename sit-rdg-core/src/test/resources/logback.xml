@@ -8,6 +8,10 @@
 
   <logger name="io.sitoolkit.rdg.core.domain.schema" level="DEBUG"/>
 
+  <logger name="io.sitoolkit.rdg.core.application.DependentRowDataGenFunc" level="TRACE"/>
+
+  <logger name="io.sitoolkit.rdg.core.domain.schema.TableSorter" level="TRACE"/>
+
   <root level="debug">
     <appender-ref ref="STDOUT" />
   </root>

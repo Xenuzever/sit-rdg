@@ -7,7 +7,7 @@ public class RandomValueGenerator implements ValueGenerator {
 
   @Override
   public String generate(ColumnDef column) {
-    return RandomValueUtils.generate(column);
+    return RandomValueUtils.generate(column.getDataType());
   }
 
   @Override

@@ -101,14 +101,13 @@ public class SchemaInfoStore {
 
     return schemaMap.values().stream()
         .map(schema -> schema.findColumnByQualifiedName(fullyQualifiedName))
-        .peek(System.out::println)
         .filter(colOpt -> !colOpt.isEmpty())
         .map(Optional::get)
         .findFirst();
   }
 
   void addTable(TableDef table) {
-    String schema = table.getSchemaName().orElse("");
+    String schema = table.getSchemaName();
     schemaMap
         .computeIfAbsent(
             schema,

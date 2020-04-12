@@ -30,14 +30,14 @@ public class GeneratorConfig {
 
   public Integer getDefaultRowCount() {
     if (Objects.isNull(defaultRowCount)) {
-      defaultRowCount = Integer.valueOf(1000);
+      defaultRowCount = Integer.valueOf(5);
     }
     return defaultRowCount;
   }
 
   public Integer getDefaultRequiredValueCount() {
     if (Objects.isNull(defaultRequiredValueCount)) {
-      defaultRequiredValueCount = Integer.valueOf(1000);
+      defaultRequiredValueCount = Integer.valueOf(5);
     }
     return defaultRequiredValueCount;
   }
