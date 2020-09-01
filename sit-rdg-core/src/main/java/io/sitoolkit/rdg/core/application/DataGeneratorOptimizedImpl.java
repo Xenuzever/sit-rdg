@@ -7,8 +7,6 @@ import io.sitoolkit.rdg.core.domain.generator.config.GeneratorConfigReader;
 import io.sitoolkit.rdg.core.domain.schema.SchemaInfo;
 import io.sitoolkit.rdg.core.infrastructure.DataWriter;
 import io.sitoolkit.rdg.core.infrastructure.RowCounter;
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
@@ -17,6 +15,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class DataGeneratorOptimizedImpl implements DataGenerator {
@@ -44,7 +43,8 @@ public class DataGeneratorOptimizedImpl implements DataGenerator {
     return outFiles;
   }
 
-  List<Path> generate(List<TableDataGenerator> generators, List<Path> outDirs, String lineSeparator) {
+  List<Path> generate(
+      List<TableDataGenerator> generators, List<Path> outDirs, String lineSeparator) {
 
     List<Path> outFiles = new ArrayList<>();
     int tableCount = generators.size();
@@ -63,7 +63,8 @@ public class DataGeneratorOptimizedImpl implements DataGenerator {
           generatedTableCount,
           tableCount);
 
-      try (DataWriter writer = DataWriter.build(outDirs, generator.getTableName() + ".csv", lineSeparator)) {
+      try (DataWriter writer =
+          DataWriter.build(outDirs, generator.getTableName() + ".csv", lineSeparator)) {
 
         writer.writeAppend(generator.getHeader());
 
@@ -92,11 +93,11 @@ public class DataGeneratorOptimizedImpl implements DataGenerator {
 
   void writeOrderFile(List<Path> outFiles, List<Path> outDirs, String lineSeparator) {
     String orderString =
-            outFiles.stream()
-                    .map(Path::getFileName)
-                    .map(Path::toString)
-                    .map(fileName -> fileName.replace(".csv", ""))
-                    .collect(Collectors.joining(lineSeparator));
+        outFiles.stream()
+            .map(Path::getFileName)
+            .map(Path::toString)
+            .map(fileName -> fileName.replace(".csv", ""))
+            .collect(Collectors.joining(lineSeparator));
 
     for (Path outDir : outDirs) {
       Path orderFile = outDir.resolve("order.txt");
