@@ -34,7 +34,7 @@ public class BufferedAsyncCsvWriter implements DataWriter, Runnable {
 
   volatile boolean flushing = false;
 
-  public static BufferedAsyncCsvWriter build(Path outFilePath) {
+  public static BufferedAsyncCsvWriter build(Path outFilePath, CSVFormat format) {
     BufferedAsyncCsvWriter writer = new BufferedAsyncCsvWriter();
     writer.bufferSize = RuntimeOptions.getInstance().getBufferSize();
     writer.flushWaitAlertSec = RuntimeOptions.getInstance().getFlushWaitAlertSec();
@@ -42,10 +42,7 @@ public class BufferedAsyncCsvWriter implements DataWriter, Runnable {
     writer.outFilePath = outFilePath;
 
     try {
-      writer.printer =
-          new CSVPrinter(
-              new FileWriter(outFilePath.toString()),
-              CSVFormat.DEFAULT.withRecordSeparator(System.lineSeparator()));
+      writer.printer = new CSVPrinter(new FileWriter(outFilePath.toString()), format);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }

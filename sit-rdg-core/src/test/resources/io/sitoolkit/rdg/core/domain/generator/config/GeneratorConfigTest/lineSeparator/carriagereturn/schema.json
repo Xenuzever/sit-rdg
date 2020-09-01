@@ -1,0 +1,16 @@
+{
+  "schemas": [
+    {
+      "tables": [
+        {
+          "tableName": "tab_1",
+          "columns": [
+            {
+              "columnName": "col"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

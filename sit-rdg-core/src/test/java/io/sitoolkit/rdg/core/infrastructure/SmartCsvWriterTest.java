@@ -9,6 +9,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
@@ -27,7 +28,11 @@ public class SmartCsvWriterTest {
     String outFileName = "scwOut.csv";
     int totalRows = 10000;
 
-    try (SmartCsvWriter writer = SmartCsvWriter.build(outDirPaths, outFileName)) {
+    try (SmartCsvWriter writer =
+        SmartCsvWriter.build(
+            outDirPaths,
+            outFileName,
+            CSVFormat.DEFAULT.withRecordSeparator("\n"))) {
 
       for (int i = 0; i < totalRows; i++) {
         writer.writeAppend(List.of(i));

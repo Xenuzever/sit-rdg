@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.csv.CSVFormat;
 
 @Slf4j
 public class SmartCsvWriter implements DataWriter {
@@ -14,11 +15,11 @@ public class SmartCsvWriter implements DataWriter {
 
   private int writerIndex = 0;
 
-  public static SmartCsvWriter build(List<Path> outDirPaths, String fileName) {
+  public static SmartCsvWriter build(List<Path> outDirPaths, String fileName, CSVFormat format) {
     SmartCsvWriter writer = new SmartCsvWriter();
 
     for (Path outDirPath : outDirPaths) {
-      writer.writers.add(BufferedAsyncCsvWriter.build(outDirPath.resolve(fileName)));
+      writer.writers.add(BufferedAsyncCsvWriter.build(outDirPath.resolve(fileName), format));
     }
 
     return writer;

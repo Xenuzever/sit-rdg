@@ -4,6 +4,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import org.apache.commons.csv.CSVFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +14,8 @@ public interface DataWriter extends Closeable {
 
   List<Path> getFiles();
 
-  static DataWriter build(List<Path> outDirs, String fileName) throws IOException {
+  static DataWriter build(List<Path> outDirs, String fileName, String lineSeparator)
+      throws IOException {
 
     Logger log = LoggerFactory.getLogger(DataWriter.class);
 
@@ -27,10 +29,11 @@ public interface DataWriter extends Closeable {
     if (outDirs.size() == 1) {
       Path outFile = outDirs.get(0).resolve(fileName);
       log.info("Start Writing: {}", outFile);
-      return new CsvWriter(outFile);
+      return new CsvWriter(outFile, CSVFormat.DEFAULT.withRecordSeparator(lineSeparator));
     } else {
       log.info("Start Writing: {} in {}", fileName, outDirs);
-      return SmartCsvWriter.build(outDirs, fileName);
+      return SmartCsvWriter.build(
+          outDirs, fileName, CSVFormat.DEFAULT.withRecordSeparator(lineSeparator));
     }
   }
 }

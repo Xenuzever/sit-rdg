@@ -1,16 +1,17 @@
 package io.sitoolkit.rdg.core.domain.generator.config;
 
-import static org.hamcrest.core.Is.is;
-
 import io.sitoolkit.rdg.core.domain.schema.SchemaInfo;
 import io.sitoolkit.rdg.core.domain.schema.TableDef;
 import io.sitoolkit.rdg.core.infrastructure.TestResourceUtils;
-import java.nio.file.Path;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+
+import java.nio.file.Path;
+
+import static org.hamcrest.core.Is.is;
 
 @Slf4j
 public class GeneratorConfigTest {
@@ -37,5 +38,25 @@ public class GeneratorConfigTest {
     Assert.assertThat(tab1RowCount, is(100L));
     Assert.assertThat(tab2RowCount, is(20L));
     Assert.assertThat(tab3RowCount, is(5L));
+  }
+
+  @Test
+  public void lineSeparator() {
+
+    Path dstDir = TestResourceUtils.copyResDir(this, testName.getMethodName());
+
+    Path defPath = dstDir.resolve("default");
+    Path crPath = dstDir.resolve("carriagereturn");
+    Path lfPath = dstDir.resolve("linefeed");
+
+    GeneratorConfigReader reader = new GeneratorConfigReader();
+
+    GeneratorConfig defConfig = reader.read(defPath);
+    GeneratorConfig crConfig = reader.read(crPath);
+    GeneratorConfig lfConfig = reader.read(lfPath);
+
+    Assert.assertThat(defConfig.getLineSeparator(), is(System.lineSeparator()));
+    Assert.assertThat(crConfig.getLineSeparator(), is("\r\n"));
+    Assert.assertThat(lfConfig.getLineSeparator(), is("\n"));
   }
 }
