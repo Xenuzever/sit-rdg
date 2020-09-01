@@ -1,17 +1,16 @@
 package io.sitoolkit.rdg.core.domain.generator.config;
 
+import static org.hamcrest.core.Is.is;
+
 import io.sitoolkit.rdg.core.domain.schema.SchemaInfo;
 import io.sitoolkit.rdg.core.domain.schema.TableDef;
 import io.sitoolkit.rdg.core.infrastructure.TestResourceUtils;
+import java.nio.file.Path;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-
-import java.nio.file.Path;
-
-import static org.hamcrest.core.Is.is;
 
 @Slf4j
 public class GeneratorConfigTest {
@@ -33,7 +32,11 @@ public class GeneratorConfigTest {
     long tab2RowCount = generatorConfig.getRowCount(tab2);
     long tab3RowCount = generatorConfig.getRowCount(tab3);
 
-    log.info("tab1RowCount:{}, tab2RowCount:{}, tab3RowCount:{}", tab1RowCount, tab2RowCount, tab3RowCount);
+    log.info(
+        "tab1RowCount:{}, tab2RowCount:{}, tab3RowCount:{}",
+        tab1RowCount,
+        tab2RowCount,
+        tab3RowCount);
 
     Assert.assertThat(tab1RowCount, is(100L));
     Assert.assertThat(tab2RowCount, is(20L));

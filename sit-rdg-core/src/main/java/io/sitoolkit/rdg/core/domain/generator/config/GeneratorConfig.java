@@ -7,10 +7,9 @@ import io.sitoolkit.rdg.core.domain.generator.config.ColumnConfig.InheritanceTyp
 import io.sitoolkit.rdg.core.domain.schema.ColumnDef;
 import io.sitoolkit.rdg.core.domain.schema.TableDef;
 import io.sitoolkit.rdg.core.domain.value.ValueGenerator;
-import lombok.Getter;
-
 import java.util.*;
 import java.util.stream.Collectors;
+import lombok.Getter;
 
 @Getter
 public class GeneratorConfig {
@@ -24,22 +23,18 @@ public class GeneratorConfig {
   @JsonProperty("ignoreScale")
   private List<String> ignoreScaleTables = new ArrayList<>();
 
-  @JsonProperty
-  private boolean listedOnly = false;
+  @JsonProperty private boolean listedOnly = false;
 
-  @JsonProperty
-  private Long defaultRowCount;
+  @JsonProperty private Long defaultRowCount;
 
-  @JsonProperty
-  private List<ColumnConfig> commonColumns = new ArrayList<>();
+  @JsonProperty private List<ColumnConfig> commonColumns = new ArrayList<>();
 
-  @JsonManagedReference
-  @JsonProperty
+  @JsonManagedReference @JsonProperty
   private List<SchemaConfig> schemaConfigs = Collections.emptyList();
 
   @Getter(lazy = true)
   private final Map<String, ColumnConfig> commonColumnMap =
-          commonColumns.stream().collect(Collectors.toMap(ColumnConfig::getName, s -> s));
+      commonColumns.stream().collect(Collectors.toMap(ColumnConfig::getName, s -> s));
 
   @JsonIgnore
   @Getter(lazy = true)
@@ -76,7 +71,9 @@ public class GeneratorConfig {
   public long getRowCount(TableDef tableDef) {
     TableConfig tableConfig = getTableMap().get(tableDef.getFullyQualifiedName());
     long rowCount = tableConfig == null ? getDefaultRowCount() : tableConfig.getRowCount();
-    return ignoreScaleTables.contains(tableDef.getFullyQualifiedName()) ? rowCount : getScale().apply(rowCount);
+    return ignoreScaleTables.contains(tableDef.getFullyQualifiedName())
+        ? rowCount
+        : getScale().apply(rowCount);
   }
 
   public Optional<ValueGenerator> findValueGenerator(ColumnDef column) {
